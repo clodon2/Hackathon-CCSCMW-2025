@@ -27,7 +27,7 @@
                         <tr>
                         <th scope="col">Course 1</th>
                         <th scope="col">Course 2</th>
-                        <th scope="col">Overlapping Students</th>
+                        <th scope="col">Conflict Score</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -35,7 +35,7 @@
                         <tr>
                         <td>{{ conflict.course1.title }}</td>
                         <td>{{ conflict.course2.title }}</td>
-                        <td>{{ conflict.overlap }}</td>
+                        <td>{{ conflict.conflict_score }}</td>
                         </tr>
                     {% endfor %}
                     </tbody>

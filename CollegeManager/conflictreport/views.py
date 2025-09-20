@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from core.models import Semester, Department, Student, Course, Section, Enrollment, PastOrPlanned
+from core.models import Semester, Department, Student, Course, Section, Enrollment, PastOrPlanned, Offering
 from django.db.models import Count
 import datetime
 from conflictreport.util_functions import semester_to_number
@@ -44,7 +44,7 @@ def conflict_report_home(request):
 
     selected_semester = Semester.objects.filter(semester_id=selected_semester_id).first()
 
-    course_overlaps = []
+    conflict_scores = []
 
     if selected_semester:
         # get all courses in that semester
@@ -61,27 +61,59 @@ def conflict_report_home(request):
                 students1_ids = set(Enrollment.objects.filter(
                     section__course=course1,
                     section__semester=selected_semester
-                ).values_list('student_id', flat=True))
+                ).values_list('student__student_id', flat=True))
 
                 students2_ids = set(Enrollment.objects.filter(
                     section__course=course2,
                     section__semester=selected_semester
-                ).values_list('student_id', flat=True))
+                ).values_list('student__student_id', flat=True))
 
-                overlap_count = len(students1_ids.intersection(students2_ids))
+                overlapping_students_ids = students1_ids.intersection(students2_ids)
+                print(overlapping_students_ids)
 
-                if overlap_count > 0:
-                    course_overlaps.append({
+                overlapping_students = Student.objects.filter(student_id__in=list(overlapping_students_ids))
+
+                grad_weight = 0
+                overlap_rarity = 0
+                for student in overlapping_students:
+                    print(student, "overlapping")
+                    grad_day = student.expected_graduation
+                    grad_distance = (semester_to_number(grad_day.semester_id) -
+                                    semester_to_number(selected_semester.semester_id))
+                    if grad_distance != 0:
+                        grad_weight += 2 / grad_distance
+                    else:
+                        grad_weight = 2
+
+                if len(overlapping_students) > 0:
+                    grad_weight /= len(overlapping_students)
+
+                    # course rarity
+                    rarity_map = {'e': 1,
+                    'ef': 1.4, 'es': 1.4,
+                    'fo': 1.6, 'fe': 1.6,
+                    'so': 1.6, 'se': 1.6}
+
+                    offering1 = Offering.objects.filter(course=course1).first().offering_code
+                    offering2 = Offering.objects.filter(course=course2).first().offering_code
+
+                    overlap_rarity = ( rarity_map.get(offering1) + rarity_map.get(offering2) ) / 2
+
+                #overlap_count = len(students1_ids.intersection(students2_ids))
+
+                if grad_weight > 0:
+                    conflict_scores.append({
                         'course1': course1,
                         'course2': course2,
-                        'overlap': overlap_count
+                        'conflict_score': overlap_rarity * grad_weight
                     })
 
-    print(selected_semester, course_overlaps)
+
+    print(selected_semester, conflict_scores)
 
     context = {
         'semesters': future_semesters,
         'selected_semester': selected_semester,
-        'course_conflicts': course_overlaps
+        'course_conflicts': conflict_scores
     }
     return render(request, 'conflictreport/home.html', context)

@@ -110,3 +110,20 @@ body {
     font-style: italic;
     margin-top: 2rem;
 }
+
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 8px; /* Adds 8px of padding inside each header and data cell */
+}
+
+th {
+    text-align: center;
+}
+
+tr {
+    text-align: center;
+}
