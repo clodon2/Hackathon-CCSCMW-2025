@@ -8,8 +8,11 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
-    <div class="navbar">
+    <div class="banner">
         <button class="drawer-toggle" onclick="openDrawer()">☰</button>
+    </div>
+
+    <div class="navbar">
         {% block navbar %} {% endblock %}
     </div>
 
