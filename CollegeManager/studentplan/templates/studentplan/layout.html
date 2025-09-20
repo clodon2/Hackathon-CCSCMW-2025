@@ -1,19 +1,17 @@
+{# templates/studentplan/layout.html #}
 {% extends 'base_layout.html' %}
 
-{% block title %}
-    {{ student.name }} - Dashboard
-{% endblock %}
+{% block title %}{{ student.name }} - Dashboard{% endblock %}
 
 {% block navbar %}
-    <a href="{% url 'schedule' %}">Progress</a>
-    <a href="{% url 'progress' %}">Scheduler</a>
+    <a href="{% url 'select_student' %}">Select Student</a>    
+    <a href="{% url 'progress' %}">Progress</a>
+    <a href="{% url 'schedule' %}">Scheduler</a>
 {% endblock %}
 
 {% block content %}
     <div class="banner">
         {{ student.name }}
     </div>
-
-    {% block main_content %} {% endblock %}
-
+    {% block main_content %}{% endblock %}
 {% endblock %}
