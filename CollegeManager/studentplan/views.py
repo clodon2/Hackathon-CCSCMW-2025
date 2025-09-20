@@ -1,7 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from core.models import Student, Enrollment, PastOrPlanned
-# Create your views here.
-
 
 def student_select(request):
     students = Student.objects.all().order_by("name")
