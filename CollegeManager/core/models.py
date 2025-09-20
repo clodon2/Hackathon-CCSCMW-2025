@@ -22,6 +22,7 @@ class Student(models.Model):
     name = models.CharField(max_length=100)
     email = models.EmailField()
     expected_graduation = models.ForeignKey(Semester, on_delete=models.CASCADE)
+    class Meta: ordering=["student_id"]
 
     def __str__(self):
         return f"{self.name} ({self.student_id})"
@@ -47,12 +48,13 @@ class Section(models.Model):
     semester = models.ForeignKey(Semester, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"{self.course} - {self.semester} (Sec {self.section_id})"
+        return f"{self.course} - {self.semester} (Section {self.section_id})"
 
 
 class Enrollment(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     section = models.ForeignKey(Section, on_delete=models.CASCADE)
+    class Meta: unique_together = ("student", "section")
 
     def __str__(self):
         return f"{self.student} enrolled in {self.section}"
@@ -62,6 +64,7 @@ class PastOrPlanned(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     semester = models.ForeignKey(Semester, on_delete=models.CASCADE)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    class Meta: unique_together = ("student", "semester", "course")
 
     def __str__(self):
         return f"{self.student} past/future enrolled {self.course} in {self.semester}"
