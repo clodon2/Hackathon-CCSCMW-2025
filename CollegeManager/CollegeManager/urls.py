@@ -26,5 +26,6 @@ urlpatterns = [
     #make sure to include these files when you commit, otherwise breaks because of references
     #path('studentcourses/', include('studentcourses.urls')),
     #path('student/', include('student.urls')),
+    #my bad pls forgive me
     path('uploaddata/', include('uploaddata.urls'))
 ]
