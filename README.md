@@ -4,6 +4,11 @@
 **Authors:** Corey Verkouteren, Gabriella Davison
 
 
+We built our solution in Django. To run, make sure you have python installed and 
+create a virtual environment. After activating and accessing the environment run 
+`pip install django` and `py manage.py runserver` once you have the project files in the environment.
+
+
 
 **The Task** <br>
 Build a system with two primary features:
