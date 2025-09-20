@@ -117,7 +117,7 @@ table, th, td {
 }
 
 th, td {
-  padding: 8px; /* Adds 8px of padding inside each header and data cell */
+  padding: 8px;
 }
 
 th {

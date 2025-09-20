@@ -69,14 +69,12 @@ def conflict_report_home(request):
                 ).values_list('student__student_id', flat=True))
 
                 overlapping_students_ids = students1_ids.intersection(students2_ids)
-                print(overlapping_students_ids)
 
                 overlapping_students = Student.objects.filter(student_id__in=list(overlapping_students_ids))
 
                 grad_weight = 0
                 overlap_rarity = 0
                 for student in overlapping_students:
-                    print(student, "overlapping")
                     grad_day = student.expected_graduation
                     grad_distance = (semester_to_number(grad_day.semester_id) -
                                     semester_to_number(selected_semester.semester_id))
@@ -108,8 +106,6 @@ def conflict_report_home(request):
                         'conflict_score': overlap_rarity * grad_weight
                     })
 
-
-    print(selected_semester, conflict_scores)
 
     context = {
         'semesters': future_semesters,
