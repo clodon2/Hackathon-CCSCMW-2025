@@ -1,0 +1,28 @@
+{% extends 'base_layout.html' %}
+
+{% block title %}
+    Upload System Information
+{% endblock %}
+
+{% block content %}
+    <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <label for="import_type">Choose import type:</label>
+    <select id="import_type" name="import_type">
+        <option value="type1">Type 1</option>
+        <option value="type2">Type 2</option>
+        <option value="type3">Type 3</option>
+    </select>
+
+    <br><br>
+
+    <label for="csv_file">Upload CSV file:</label>
+    <input type="file" id="csv_file" name="csv_file" accept=".csv">
+
+    <br><br>
+
+    <button type="submit">Upload and Process</button>
+</form>
+
+{% endblock %}
