@@ -1,13 +1,42 @@
-{% extends "./layout.html" %}
+{% extends "studentplan/layout.html" %}
 
 {% block main_content %}
-    <h2>Progress Overview</h2>
-    <p>{{ student.name }} has completed {{ credits_completed }} credits out of {{ total_credits }} required.</p>
-    <ul>
-        {% for course in completed_courses %}
-            <li>{{ course.course_id }} - {{ course.title }}</li>
-        {% empty %}
-            <li>No courses completed yet.</li>
+  <h2>Progress</h2>
+
+  <p><strong>Classes completed:</strong> {{ classes_completed }}</p>
+
+  {% if completed %}
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Semester</th>
+          <th>Course</th>
+          <th>Title</th>
+          <th>Credits</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in completed %}
+          <tr>
+            <td>{{ row.semester }}</td>
+            <td>{{ row.code }}</td>
+            <td>{{ row.title }}</td>
+            <td>{{ row.hours }}</td>
+          </tr>
         {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>No completed enrollments found yet.</p>
+  {% endif %}
+  <p><strong>Total credits:</strong> {{ total_credits }}</p>
+  {# Optional: show planned courses too #}
+  {% if planned %}
+    <h3 class="mt-4">Planned Courses ({{ planned_count }})</h3>
+    <ul>
+      {% for p in planned %}
+        <li>{{ p.semester.semester_id }} — {{ p.course.department.department_id }} {{ p.course.course_num }}: {{ p.course.title }}</li>
+      {% endfor %}
     </ul>
+  {% endif %}
 {% endblock %}
