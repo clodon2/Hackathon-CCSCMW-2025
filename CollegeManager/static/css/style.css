@@ -85,8 +85,8 @@ body {
 .student-list {
     list-style: none;
     padding: 0;
-    max-width: 600px;
-    margin: 0 auto;
+    max-width: 600px; /* You can keep this to maintain a readable width */
+    margin: 0 0 0 2rem; /* Sets top, right, bottom margins to 0 and left margin to 2rem */
 }
 
 .student-item {
@@ -116,7 +116,7 @@ body {
 }
 
 .no-students {
-    text-align: center;
+    text-align: left;
     color: #7f8c8d;
     font-style: italic;
     margin-top: 2rem;
