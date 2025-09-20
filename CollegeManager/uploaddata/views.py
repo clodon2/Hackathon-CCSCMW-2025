@@ -15,7 +15,8 @@ def upload_csv(request):
             return HttpResponseBadRequest("Invalid file. Please upload a CSV file.")
 
         decoded_file = csv_file.read().decode('utf-8').splitlines()
-        reader = csv.DictReader(decoded_file)
+        cleaned_lines = [line.replace("'", "") for line in decoded_file]
+        reader = csv.DictReader(cleaned_lines)
 
         try:
             if import_type == 'course':
@@ -94,7 +95,5 @@ def upload_csv(request):
         except Exception as e:
             return HttpResponseBadRequest(f"An error occurred during import: {e}")
         """
-
-        return redirect('success_page')
 
     return render(request, 'uploaddata/uploadpage.html', {'success_message': success_message})
