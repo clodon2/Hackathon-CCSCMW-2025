@@ -23,4 +23,5 @@ urlpatterns = [
     path('', views.homepage),
     path('studentplan/', include('studentplan.urls')),
     path('conflictreport/', include('conflictreport.urls')),
+    path('uploaddata/', include('uploaddata.urls'))
 ]

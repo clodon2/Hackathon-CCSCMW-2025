@@ -5,14 +5,22 @@
 {% endblock %}
 
 {% block content %}
+    {% if success_message %}
+        <div style="color: green; font-weight: bold; margin-bottom: 15px;">
+            ✅ {{ success_message }}
+        </div>
+    {% endif %}
     <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
 
     <label for="import_type">Choose import type:</label>
     <select id="import_type" name="import_type">
-        <option value="type1">Type 1</option>
-        <option value="type2">Type 2</option>
-        <option value="type3">Type 3</option>
+        <option value="course">Course</option>
+        <option value="section">Section</option>
+        <option value="student">Student</option>
+        <option value="enrollment">Enrollment</option>
+        <option value="offering">Offering</option>
+        <option value="planned">Planned</option>
     </select>
 
     <br><br>
