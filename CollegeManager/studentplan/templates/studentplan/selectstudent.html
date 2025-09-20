@@ -1,19 +1,23 @@
 {# templates/studentplan/selectstudent.html #}
 {% extends 'base_layout.html' %}
 
-{% block title %}Select a Student to View{% endblock %}
+{% block title %}Select a Student{% endblock %}
 
 {% block content %}
-  <h1>Select a Student to View</h1>
-  <ul>
-    {% for student in students %}
-      <li>
-        <a href="{% url 'selected_student' student.id %}">
-          {{ student.name }} ({{ student.expected_graduation }})
-        </a>
-      </li>
-    {% empty %}
-      <li>No students available.</li>
-    {% endfor %}
-  </ul>
+  <h1 class="page-title">Select a Student to View</h1>
+
+  {% if students %}
+    <ul class="student-list">
+      {% for student in students %}
+        <li class="student-item">
+          <a href="{% url 'selected_student' student.id %}" class="student-link">
+            <span>{{ student.name }}</span>
+            <span class="student-graduation">Graduation: {{ student.expected_graduation.name }}</span>
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="no-students">No students available.</p>
+  {% endif %}
 {% endblock %}
