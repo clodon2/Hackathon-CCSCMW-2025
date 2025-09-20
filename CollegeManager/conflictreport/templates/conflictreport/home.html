@@ -3,7 +3,7 @@
 {% load static %}
 
 {% block main_content %}
-    <div class="report-controls">
+<div class="report-controls">
         <form method="post" action="{% url 'conflictreportparams' %}">
             {% csrf_token %}
             <label for="semester-select">Select Semester:</label>
@@ -17,29 +17,36 @@
         </form>
     </div>
 
-    <div class="report-content">
-    <h2>Report for {{ selected_semester.name }}</h2>
-    {% if not scheduling_issues %}
-        <p class="no-issues">No significant scheduling issues were found for this semester. Great job!</p>
-    {% else %}
-        {% for issue in scheduling_issues %}
-            <div class="issue-block">
-                <h3>{{ issue.title }}</h3>
-                <p>{{ issue.description }}</p>
-                <ul>
-                    {% if issue.sections %}
-                        {% for section in issue.sections %}
-                            <li>{{ section.course.course_id }} - Section {{ section.section_num }} ({{ section.num_students }} students)</li>
-                        {% endfor %}
-                    {% elif issue.courses %}
-                         {% for course in issue.courses %}
-                            <li>{{ course.course_id }} - {{ course.title }}</li>
-                        {% endfor %}
-                    {% endif %}
-                </ul>
-            </div>
-        {% endfor %}
-    {% endif %}
+    <div>
+        {% if selected_semester %}
+        <h2>Conflicts for {{ selected_semester.name }}</h2>
+        {% if course_conflicts %}
+        <div>
+        <table>
+            <thead>
+            <tr>
+            <th scope="col">Course 1</th>
+            <th scope="col">Course 2</th>
+            <th scope="col">Overlapping Students</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for conflict in course_conflicts %}
+            <tr>
+            <td>{{ conflict.course1.title }}</td>
+            <td>{{ conflict.course2.title }}</td>
+            <td>{{ conflict.overlap }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        </div>
+        {% else %}
+        <p>No course conflicts found for this semester.</p>
+        {% endif %}
+        {% else %}
+        <p>Please select a semester to view the conflict report.</p>
+        {% endif %}
     </div>
 
 {% endblock %}

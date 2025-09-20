@@ -32,7 +32,7 @@ def conflict_report_home(request):
     else:
         current_semester_int = (current_year * 10) + 2
 
-    # Get all semesters, convert to integers, and filter for future semesters
+    # Get all semesters, convert to int, and filter for future semesters
     all_semesters = Semester.objects.all().order_by('semester_id')
     future_semesters = [s for s in all_semesters if semester_to_number(s.semester_id) > current_semester_int]
 
@@ -44,54 +44,42 @@ def conflict_report_home(request):
 
     selected_semester = Semester.objects.filter(semester_id=selected_semester_id).first()
 
-    scheduling_issues = []
+    course_conflicts = []
 
     if selected_semester:
-        # 1. Sections with no enrolled students
-        empty_sections = Section.objects.filter(
-            semester=selected_semester
-        ).annotate(
-            num_students=Count('enrollment')
-        ).filter(num_students=0).select_related('course')
+        # get all courses in that semester
+        all_courses = Course.objects.filter(
+            section__semester=selected_semester
+        ).distinct()
+        course_list = list(all_courses)
 
-        if empty_sections:
-            issues = {
-                'title': 'Empty Sections',
-                'description': 'The following sections have no students enrolled.',
-                'sections': empty_sections
-            }
-            scheduling_issues.append(issues)
+        for i in range(len(course_list)):
+            for j in range(i + 1, len(course_list)):
+                course1 = course_list[i]
+                course2 = course_list[j]
 
-        # 2. Sections with high enrollment
-        over_capacity_sections = Section.objects.filter(
-            semester=selected_semester
-        ).annotate(
-            num_students=Count('enrollment')
-        ).filter(num_students__gt=20).select_related('course')  # Using 20 as an arbitrary high number
+                students1_ids = set(Enrollment.objects.filter(
+                    section__course=course1,
+                    section__semester=selected_semester
+                ).values_list('student_id', flat=True))
 
-        if over_capacity_sections:
-            issues = {
-                'title': 'Over-Capacity Sections',
-                'description': 'These sections have more students than recommended (over 20).',
-                'sections': over_capacity_sections
-            }
-            scheduling_issues.append(issues)
+                students2_ids = set(Enrollment.objects.filter(
+                    section__course=course2,
+                    section__semester=selected_semester
+                ).values_list('student_id', flat=True))
 
-        # 3. Courses with no sections
-        courses_without_sections = Course.objects.filter(
-            section__isnull=True
-        )
-        if courses_without_sections:
-            issues = {
-                'title': 'Courses Without Sections',
-                'description': 'The following courses have not been assigned any sections.',
-                'courses': courses_without_sections
-            }
-            scheduling_issues.append(issues)
+                overlap_count = len(students1_ids.intersection(students2_ids))
+
+                if overlap_count > 0:
+                    course_conflicts.append({
+                        'course1': course1,
+                        'course2': course2,
+                        'overlap': overlap_count
+                    })
 
     context = {
         'semesters': future_semesters,
         'selected_semester': selected_semester,
-        'scheduling_issues': scheduling_issues
+        'course_conflicts': course_conflicts
     }
     return render(request, 'conflictreport/home.html', context)
