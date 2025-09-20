@@ -23,7 +23,8 @@ urlpatterns = [
     path('', views.homepage),
     path('studentplan/', include('studentplan.urls')),
     path('conflictreport/', include('conflictreport.urls')),
-    path('studentcourses/', include('studentcourses.urls')),
-    path('student/', include('student.urls')),
+    #make sure to include these files when you commit, otherwise breaks because of references
+    #path('studentcourses/', include('studentcourses.urls')),
+    #path('student/', include('student.urls')),
     path('uploaddata/', include('uploaddata.urls'))
 ]
