@@ -18,8 +18,8 @@
     <select name="sem" id="sem">
       <option value="">-- choose --</option>
       {% for s in semesters %}
-        <option value="{{ s.semester_id }}" {% if s.semester_id == selected_sem %}selected{% endif %}>
-          {{ s.semester_id }}
+        <option value="{{ s.name }}" {% if s.semester_id == selected_sem %}selected{% endif %}>
+          {{ s.name }}
         </option>
       {% endfor %}
     </select>
