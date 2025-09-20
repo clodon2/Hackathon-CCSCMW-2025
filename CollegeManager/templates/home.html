@@ -5,6 +5,31 @@
 {% endblock %}
 
 {% block content %}
-    <p>Go to <a href="/studentplan/"> studentPlan </a></p>
-    <p>Go to <a href="/conflictreport/"> conflictReport </a></p>
+    <h1>Welcome to the course advising page</h1>
+    <div class="card-group">
+        <div class="card">
+            <a href="/studentplan/">
+                <div>
+                    <h2>Student Planning</h2>
+                    <p>Check progress or update student schedules</p>
+                </div>
+            </a>
+        </div>
+        <div class="card">
+            <a href="/conflictreport/">
+                <div>
+                    <h2>Conflict Report</h2>
+                    <p>Check for future course conflicts</p>
+                </div>
+            </a>
+        </div>
+        <div class="card">
+            <a href="/uploaddata/">
+                <div>
+                    <h2>Upload Data</h2>
+                    <p>Upload data from csv files</p>
+                </div>
+            </a>
+        </div>
+    </div>
 {% endblock %}
