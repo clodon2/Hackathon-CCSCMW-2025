@@ -97,7 +97,7 @@ def student_progress(request):
     total_credits = 0.0
     for e in enrollments:
         c = e.section.course
-        sem = e.section.semester.semester_id
+        sem = e.section.semester.name
         hours = c.min_hours or 0.0
         total_credits += hours
         completed.append({

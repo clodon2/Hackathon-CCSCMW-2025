@@ -19,7 +19,7 @@
         {% for row in completed %}
           <tr>
             <td>{{ row.semester }}</td>
-            <td>{{ row.code }}</td>
+            <td>{{ row.course_id }}</td>
             <td>{{ row.title }}</td>
             <td>{{ row.hours }}</td>
           </tr>
@@ -35,7 +35,7 @@
     <h3 class="mt-4">Planned Courses ({{ planned_count }})</h3>
     <ul>
       {% for p in planned %}
-        <li>{{ p.semester.semester_id }} — {{ p.course.department.department_id }} {{ p.course.course_num }}: {{ p.course.title }}</li>
+        <li>{{ p.semester.name }} — {{ p.course.department.department_id }} {{ p.course.course_num }}: {{ p.course.title }}</li>
       {% endfor %}
     </ul>
   {% endif %}
