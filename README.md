@@ -8,6 +8,9 @@ We built our solution in Django. To run, make sure you have python installed and
 create a virtual environment. After activating and accessing the environment run 
 `pip install django` and `py manage.py runserver` once you have the project files in the environment.
 
+Sample Images
+![img.png](img.png)
+![img_1.png](img_1.png)
 
 
 **The Task** <br>
