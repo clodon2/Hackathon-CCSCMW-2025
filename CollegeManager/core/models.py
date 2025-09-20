@@ -1,5 +1,3 @@
-from tkinter.constants import CASCADE
-
 from django.db import models
 
 
@@ -86,3 +84,12 @@ class PastOrPlanned(models.Model):
 
     def __str__(self):
         return f"{self.student} past/future enrolled {self.course} in {self.semester}"
+
+
+class Offering(models.Model):
+    offering_code = models.CharField(max_length=2)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    class Meta: unique_together = ("offering_code", "course")
+
+    def __str__(self):
+        return f"{self.course} offered on {self.offering_code}"

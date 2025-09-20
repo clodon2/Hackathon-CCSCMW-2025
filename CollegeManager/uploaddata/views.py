@@ -2,7 +2,7 @@
 import csv
 from django.shortcuts import render, redirect
 from django.http import HttpResponseBadRequest
-from core.models import Semester, Department, Student, Course, Section, Enrollment, PastOrPlanned
+from core.models import Semester, Department, Student, Course, Section, Enrollment, PastOrPlanned, Offering
 
 
 def upload_csv(request):
@@ -97,6 +97,16 @@ def upload_csv(request):
                         student=student_obj,
                         course=course_obj,
                         semester=semester_obj
+                    )
+
+            elif import_type == "offering":
+                for row in reader:
+                    course_obj = Course.objects.get(course_id=row['crs id'])
+
+                    # Create the Enrollment record, using get_or_create to prevent duplicates
+                    Offering.objects.get_or_create(
+                        course=course_obj,
+                        offering_code=row['code'].replace("'", "")
                     )
 
             success_message = f"Successfully imported data for {import_type}!"

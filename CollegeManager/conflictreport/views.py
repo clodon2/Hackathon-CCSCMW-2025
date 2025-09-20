@@ -1,15 +1,46 @@
 from django.shortcuts import render
 from core.models import Semester, Department, Student, Course, Section, Enrollment, PastOrPlanned
 from django.db.models import Count
+import datetime
+from conflictreport.util_functions import semester_to_number
+
+
+"""
+For a target future semester (typically the next semester), generate a conflict report that:
+Estimates how many students are planning to take each course.
+Highlights course pairs that should not be scheduled at the same time.
+Prioritizes conflicts to help in building the course schedule.
+
+conflict level for each course pair based on:
+🧵 Overlap: Number of students planning to take both courses that semester.
+🔁 Course Rarity: Less common courses (e.g., CS 356) have higher conflict weight than high-frequency ones (e.g., ENG 101).
+🎓 Student Seniority: A conflict is worse if many near-graduation students are affected.
+🧠 The system should be able to explain the reasoning behind any conflict level (e.g., “6 students plan to take both; both are single-section upper-level courses; 4 are graduating seniors”).
+
+"""
 
 
 def conflict_report_home(request):
-    semesters = Semester.objects.all().order_by('-semester_id')
+    today = datetime.date.today()
+    current_year = today.year
+    current_month = today.month
+
+    if 1 <= current_month <= 4:
+        current_semester_int = (current_year * 10) + 0
+    elif 5 <= current_month <= 7:
+        current_semester_int = (current_year * 10) + 1
+    else:
+        current_semester_int = (current_year * 10) + 2
+
+    # Get all semesters, convert to integers, and filter for future semesters
+    all_semesters = Semester.objects.all().order_by('semester_id')
+    future_semesters = [s for s in all_semesters if semester_to_number(s.semester_id) > current_semester_int]
+
+    # Handle form submission and default semester selection
     selected_semester_id = request.POST.get('semester', None)
 
-    # If no semester is selected from the form, default to the most recent one
-    if not selected_semester_id and semesters.exists():
-        selected_semester_id = semesters.first().semester_id
+    if not selected_semester_id and future_semesters:
+        selected_semester_id = future_semesters[0].semester_id
 
     selected_semester = Semester.objects.filter(semester_id=selected_semester_id).first()
 
@@ -59,7 +90,7 @@ def conflict_report_home(request):
             scheduling_issues.append(issues)
 
     context = {
-        'semesters': semesters,
+        'semesters': future_semesters,
         'selected_semester': selected_semester,
         'scheduling_issues': scheduling_issues
     }
