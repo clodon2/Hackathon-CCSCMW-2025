@@ -1,0 +1,18 @@
+{% extends 'base_layout.html' %}
+
+{% block title %}
+    Select a Student to View
+{% endblock %}
+
+{% block content %}
+    <h1>Select a Student to View</h1>
+    {% for student in students %}
+        <li>
+            <a href="{% url 'selected_student' student.id %}">
+                {{ student.name }} ({{ student.expected_graduation }})
+            </a>
+        </li>
+    {% empty %}
+        <li>No students available.</li>
+    {% endfor %}
+{% endblock %}

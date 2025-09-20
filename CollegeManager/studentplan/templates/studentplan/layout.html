@@ -1,0 +1,19 @@
+{% extends 'base_layout.html' %}
+
+{% block title %}
+    {{ student.name }} - Dashboard
+{% endblock %}
+
+{% block navbar %}
+    <a href="{% url 'schedule' %}">Progress</a>
+    <a href="{% url 'progress' %}">Scheduler</a>
+{% endblock %}
+
+{% block content %}
+    <div class="banner">
+        {{ student.name }}
+    </div>
+
+    {% block main_content %} {% endblock %}
+
+{% endblock %}

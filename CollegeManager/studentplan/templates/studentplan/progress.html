@@ -1,0 +1,13 @@
+{% extends "./layout.html" %}
+
+{% block main_content %}
+    <h2>Progress Overview</h2>
+    <p>{{ student.name }} has completed {{ credits_completed }} credits out of {{ total_credits }} required.</p>
+    <ul>
+        {% for course in completed_courses %}
+            <li>{{ course.course_id }} - {{ course.title }}</li>
+        {% empty %}
+            <li>No courses completed yet.</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

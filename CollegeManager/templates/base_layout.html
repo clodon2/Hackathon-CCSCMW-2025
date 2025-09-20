@@ -1,0 +1,39 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %} Sample {% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <div class="navbar">
+        <button class="drawer-toggle" onclick="openDrawer()">☰</button>
+        {% block navbar %} {% endblock %}
+    </div>
+
+    <!-- Page content -->
+    <div class="content">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    <!-- Right-side drawer -->
+    <div id="drawer" class="drawer">
+        <button class="drawer-close" onclick="closeDrawer()">×</button>
+        <a href="{% url 'select_student' %}">Student Planning</a>
+        <a href="{% url 'conflictreport' %}">Conflict Reports</a>
+    </div>
+
+    <script>
+        function openDrawer() {
+            document.getElementById("drawer").style.width = "250px";
+        }
+        function closeDrawer() {
+            document.getElementById("drawer").style.width = "0";
+        }
+    </script>
+
+</body>
+</html>

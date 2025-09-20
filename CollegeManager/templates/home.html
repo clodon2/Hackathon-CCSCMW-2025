@@ -1,15 +1,10 @@
-<!DOCTYPE html>
-{% load static %}
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Page Title</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
-<body>
-    <!-- Your page content goes here -->
+{% extends 'base_layout.html' %}
+
+{% block title %}
+    Student Planner Home
+{% endblock %}
+
+{% block content %}
     <p>Go to <a href="/studentplan/"> studentPlan </a></p>
     <p>Go to <a href="/conflictreport/"> conflictReport </a></p>
-</body>
-</html>
+{% endblock %}
