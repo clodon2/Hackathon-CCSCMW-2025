@@ -1,6 +1,86 @@
-{% extends "./layout.html" %}
+{% extends "studentplan/layout.html" %}
 
 {% block main_content %}
-    <h2>Progress Overview</h2>
-    <p>{{ student.name }}</p>
+  <h2>Scheduler</h2>
+
+  {# messages (optional): show success/error after actions #}
+  {% if messages %}
+    <div>
+      {% for m in messages %}
+        <div class="alert">{{ m }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  {# Semester picker (GET) #}
+  <form method="get" class="mb-3" style="margin-bottom:1rem;">
+    <label for="sem">Semester:</label>
+    <select name="sem" id="sem">
+      <option value="">-- choose --</option>
+      {% for s in semesters %}
+        <option value="{{ s.semester_id }}" {% if s.semester_id == selected_sem %}selected{% endif %}>
+          {{ s.semester_id }}
+        </option>
+      {% endfor %}
+    </select>
+    <button type="submit">Load</button>
+  </form>
+
+  {% if selected_sem %}
+    <h3>Planned for {{ selected_sem }}</h3>
+
+    {% if planned %}
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Course</th>
+            <th>Title</th>
+            <th>Credits</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for p in planned %}
+            <tr>
+              <td>{{ p.course.department.department_id }} {{ p.course.course_num }}</td>
+              <td>{{ p.course.title }}</td>
+              <td>{{ p.course.min_hours }}</td>
+              <td>
+                <form method="post" style="display:inline;">
+                  {% csrf_token %}
+                  <input type="hidden" name="action" value="remove">
+                  <input type="hidden" name="pp_id" value="{{ p.id }}">
+                  <input type="hidden" name="sem" value="{{ selected_sem }}">
+                  <button type="submit">Remove</button>
+                </form>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p>No courses planned yet for {{ selected_sem }}.</p>
+    {% endif %}
+
+    <hr>
+
+    <h3>Add a course to {{ selected_sem }}</h3>
+    <form method="post">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="add">
+      <input type="hidden" name="sem" value="{{ selected_sem }}">
+      <label for="course_id">Course:</label>
+      <select name="course_id" id="course_id" required>
+        <option value="">-- choose a course --</option>
+        {% for c in available_courses %}
+          <option value="{{ c.course_id }}">
+            {{ c.department.department_id }} {{ c.course_num }} — {{ c.title }}
+          </option>
+        {% endfor %}
+      </select>
+      <button type="submit">Add</button>
+    </form>
+  {% else %}
+    <p>Select a semester to begin planning.</p>
+  {% endif %}
 {% endblock %}
