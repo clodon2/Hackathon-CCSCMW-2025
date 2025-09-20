@@ -34,7 +34,55 @@ def upload_csv(request):
                         min_hours=row['min hours'],
                         max_hours=row['max hours']
                     )
+
+            elif import_type == 'student':
+                for row in reader:
+                    semester_obj, created = Semester.objects.get_or_create(semester_id=row['exp grad date'])
+
+                    student_obj, created = Student.objects.get_or_create(
+                        student_id=row['std id'],
+                        defaults={
+                            'name': row['name'],
+                            'email': row['email'],
+                            'expected_graduation': semester_obj
+                        }
+                    )
+
+            elif import_type == 'section':
+                for row in reader:
+                    print(row)
+                    # Retrieve related objects. These must exist in the database.
+                    department_obj, created = Department.objects.get_or_create(department_id=row['dept code'])
+
+                    # Note: You need to get the Course by both department and course number
+                    course_obj = Course.objects.get(
+                        department=department_obj,
+                        course_num=int(row['crs num'])
+                    )
+
+                    semester_obj, created_sem = Semester.objects.get_or_create(semester_id=row['sem'])
+
+                    # Create the Section entry using get_or_create to prevent duplicates
+                    Section.objects.get_or_create(
+                        section_id=row['sec id'],
+                        defaults={
+                            'department': department_obj,
+                            'course': course_obj,
+                            'section_num': int(row['sec num']),
+                            'semester': semester_obj
+                        }
+                    )
             success_message = f"Successfully imported data for {import_type}!"
+
+        except (Department.DoesNotExist, Course.DoesNotExist, Semester.DoesNotExist) as e:
+            return HttpResponseBadRequest(
+                f"A related record was not found for one of the sections. Error: {e}"
+            )
+
+        except ValueError:
+            # Handle cases where 'crs num' or 'sec num' is not a number
+            return HttpResponseBadRequest(f"A numeric field had an invalid value.")
+
         except Exception as e:
             return HttpResponseBadRequest(f"An error occurred during import: {e}")
 
