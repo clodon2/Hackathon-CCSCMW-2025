@@ -28,6 +28,7 @@
                         <th scope="col">Course 1</th>
                         <th scope="col">Course 2</th>
                         <th scope="col">Conflict Score</th>
+                        <th scope="col">Reason</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -36,6 +37,7 @@
                         <td>{{ conflict.course1.title }}</td>
                         <td>{{ conflict.course2.title }}</td>
                         <td>{{ conflict.conflict_score }}</td>
+                            <td>{{ conflict.reason }}</td>
                         </tr>
                     {% endfor %}
                     </tbody>

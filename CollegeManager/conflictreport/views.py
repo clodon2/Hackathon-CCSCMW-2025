@@ -70,14 +70,38 @@ def conflict_report_home(request):
 
                 overlapping_students_ids = students1_ids.intersection(students2_ids)
 
+                total_overlapping = len(overlapping_students_ids)
+
                 overlapping_students = Student.objects.filter(student_id__in=list(overlapping_students_ids))
 
                 grad_weight = 0
                 overlap_rarity = 0
+                student_levels = {
+                    "Graduating Seniors": 0,
+                    "Seniors": 0,
+                    "Juniors": 0,
+                    "Sophomores": 0,
+                    "Freshmen": 0
+                }
+                level_map = {
+                    0: "Graduating Seniors",
+                    1: "Seniors",
+                    2: "Seniors",
+                    10: "Juniors",
+                    11: "Juniors",
+                    12: "Juniors",
+                    20: "Sophomores",
+                    21: "Sophomores",
+                    22: "Sophomores",
+                    30: "Freshmen",
+                    31: "Freshmen",
+                    32: "Freshmen"
+                }
                 for student in overlapping_students:
                     grad_day = student.expected_graduation
                     grad_distance = (semester_to_number(grad_day.semester_id) -
                                     semester_to_number(selected_semester.semester_id))
+                    student_levels[level_map[grad_distance]] += 1
                     if grad_distance != 0:
                         grad_weight += 2 / grad_distance
                     else:
@@ -98,12 +122,22 @@ def conflict_report_home(request):
                     overlap_rarity = ( rarity_map.get(offering1) + rarity_map.get(offering2) ) / 2
 
                 #overlap_count = len(students1_ids.intersection(students2_ids))
+                student_level_string = ""
+                for level in student_levels:
+                    student_level_string += f"{student_levels[level]} {level}, "
+
+                reason = (f"{total_overlapping} students overlap; {student_level_string[:-2]}; "
+                          f"{round(overlap_rarity - 1)} infrequent courses")
+
+                if round(overlap_rarity - 1) == 1:
+                    reason = reason[:-1]
 
                 if grad_weight > 0:
                     conflict_scores.append({
                         'course1': course1,
                         'course2': course2,
-                        'conflict_score': overlap_rarity * grad_weight
+                        'conflict_score': overlap_rarity * grad_weight,
+                        'reason': reason
                     })
 
 
