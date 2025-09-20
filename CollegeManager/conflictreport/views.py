@@ -44,7 +44,7 @@ def conflict_report_home(request):
 
     selected_semester = Semester.objects.filter(semester_id=selected_semester_id).first()
 
-    course_conflicts = []
+    course_overlaps = []
 
     if selected_semester:
         # get all courses in that semester
@@ -71,15 +71,17 @@ def conflict_report_home(request):
                 overlap_count = len(students1_ids.intersection(students2_ids))
 
                 if overlap_count > 0:
-                    course_conflicts.append({
+                    course_overlaps.append({
                         'course1': course1,
                         'course2': course2,
                         'overlap': overlap_count
                     })
 
+    print(selected_semester, course_overlaps)
+
     context = {
         'semesters': future_semesters,
         'selected_semester': selected_semester,
-        'course_conflicts': course_conflicts
+        'course_conflicts': course_overlaps
     }
     return render(request, 'conflictreport/home.html', context)

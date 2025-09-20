@@ -19,33 +19,33 @@
 
     <div>
         {% if selected_semester %}
-        <h2>Conflicts for {{ selected_semester.name }}</h2>
-        {% if course_conflicts %}
-        <div>
-        <table>
-            <thead>
-            <tr>
-            <th scope="col">Course 1</th>
-            <th scope="col">Course 2</th>
-            <th scope="col">Overlapping Students</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for conflict in course_conflicts %}
-            <tr>
-            <td>{{ conflict.course1.title }}</td>
-            <td>{{ conflict.course2.title }}</td>
-            <td>{{ conflict.overlap }}</td>
-            </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-        </div>
+            <h2>Conflicts for {{ selected_semester.name }}</h2>
+            {% if course_conflicts %}
+                <div>
+                <table>
+                    <thead>
+                        <tr>
+                        <th scope="col">Course 1</th>
+                        <th scope="col">Course 2</th>
+                        <th scope="col">Overlapping Students</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for conflict in course_conflicts %}
+                        <tr>
+                        <td>{{ conflict.course1.title }}</td>
+                        <td>{{ conflict.course2.title }}</td>
+                        <td>{{ conflict.overlap }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                </div>
+            {% else %}
+                <p>No course conflicts found for this semester.</p>
+            {% endif %}
         {% else %}
-        <p>No course conflicts found for this semester.</p>
-        {% endif %}
-        {% else %}
-        <p>Please select a semester to view the conflict report.</p>
+            <p>Please select a semester to view the conflict report.</p>
         {% endif %}
     </div>
 
