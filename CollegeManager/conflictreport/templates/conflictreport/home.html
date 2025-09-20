@@ -1,14 +1,45 @@
-<!DOCTYPE html>
+{% extends './layout.html' %}
+
 {% load static %}
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Page Title</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
-<body>
-    <!-- Your page content goes here -->
-    <p>Go to <a href="/"> Home </a></p>
-</body>
-</html>
+
+{% block main_content %}
+    <div class="report-controls">
+        <form method="post" action="{% url 'conflictreportparams' %}">
+            {% csrf_token %}
+            <label for="semester-select">Select Semester:</label>
+            <select name="semester" id="semester-select" onchange="this.form.submit()">
+                {% for semester in semesters %}
+                    <option value="{{ semester.semester_id }}" {% if semester == selected_semester %}selected{% endif %}>
+                {{ semester.name }}
+                </option>
+            {% endfor %}
+            </select>
+        </form>
+    </div>
+
+    <div class="report-content">
+    <h2>Report for {{ selected_semester.name }}</h2>
+    {% if not scheduling_issues %}
+        <p class="no-issues">No significant scheduling issues were found for this semester. Great job!</p>
+    {% else %}
+        {% for issue in scheduling_issues %}
+            <div class="issue-block">
+                <h3>{{ issue.title }}</h3>
+                <p>{{ issue.description }}</p>
+                <ul>
+                    {% if issue.sections %}
+                        {% for section in issue.sections %}
+                            <li>{{ section.course.course_id }} - Section {{ section.section_num }} ({{ section.num_students }} students)</li>
+                        {% endfor %}
+                    {% elif issue.courses %}
+                         {% for course in issue.courses %}
+                            <li>{{ course.course_id }} - {{ course.title }}</li>
+                        {% endfor %}
+                    {% endif %}
+                </ul>
+            </div>
+        {% endfor %}
+    {% endif %}
+    </div>
+
+{% endblock %}

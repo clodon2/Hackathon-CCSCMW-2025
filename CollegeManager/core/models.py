@@ -6,6 +6,24 @@ from django.db import models
 class Semester(models.Model):
     semester_id = models.CharField(max_length=6, unique=True)
 
+    @property
+    def name(self):
+        if not self.semester_id or len(self.semester_id) < 4:
+            return ""
+
+        season_code = self.semester_id[:2].lower()
+        year = self.semester_id[2:]
+
+        season_names = {
+            'fa': 'Fall',
+            'sp': 'Spring',
+            'su': 'Summer'
+        }
+
+        season = season_names.get(season_code, 'Unknown')
+
+        return f"{season} {year}"
+
     def __str__(self):
         return f"{self.semester_id}"
 
