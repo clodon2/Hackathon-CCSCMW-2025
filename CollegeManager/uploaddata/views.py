@@ -2,7 +2,7 @@
 import csv
 from django.shortcuts import render, redirect
 from django.http import HttpResponseBadRequest
-from core.models import Semester, Department, Student, Course, Section, Enrollment
+from core.models import Semester, Department, Student, Course, Section, Enrollment, PastOrPlanned
 
 
 def upload_csv(request):
@@ -72,11 +72,44 @@ def upload_csv(request):
                             'semester': semester_obj
                         }
                     )
+
+            elif import_type == 'enrollment':
+                for row in reader:
+                    # Get the related Student and Section objects. They must exist in the database.
+                    student_obj = Student.objects.get(student_id=row['std id'])
+                    section_obj = Section.objects.get(section_id=row['sec id'])
+
+                    # Create the Enrollment record, using get_or_create to prevent duplicates
+                    Enrollment.objects.get_or_create(
+                        student=student_obj,
+                        section=section_obj
+                    )
+
+            elif import_type == "planned":
+                for row in reader:
+                    # Get the related Student and Section objects. They must exist in the database.
+                    student_obj = Student.objects.get(student_id=row['std id'])
+                    course_obj = Course.objects.get(course_id=row['crs id'])
+                    semester_obj, created = Semester.objects.get_or_create(semester_id=row['sem'])
+
+                    # Create the Enrollment record, using get_or_create to prevent duplicates
+                    PastOrPlanned.objects.get_or_create(
+                        student=student_obj,
+                        course=course_obj,
+                        semester=semester_obj
+                    )
+
             success_message = f"Successfully imported data for {import_type}!"
 
         except (Department.DoesNotExist, Course.DoesNotExist, Semester.DoesNotExist) as e:
             return HttpResponseBadRequest(
                 f"A related record was not found for one of the sections. Error: {e}"
+            )
+
+        except (Student.DoesNotExist, Section.DoesNotExist) as e:
+            # Handle cases where a related object is missing
+            return HttpResponseBadRequest(
+                f"A related record was not found. Please ensure all students and sections are imported first. Error: {e}"
             )
 
         except ValueError:

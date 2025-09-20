@@ -1,3 +1,5 @@
+from tkinter.constants import CASCADE
+
 from django.db import models
 
 
@@ -5,14 +7,14 @@ class Semester(models.Model):
     semester_id = models.CharField(max_length=6, unique=True)
 
     def __str__(self):
-        return f"{self.semester_id})"
+        return f"{self.semester_id}"
 
 
 class Department(models.Model):
     department_id = models.CharField(max_length=4, unique=True)
 
     def __str__(self):
-        return f"{self.department_id})"
+        return f"{self.department_id}"
 
 
 class Student(models.Model):
@@ -54,3 +56,12 @@ class Enrollment(models.Model):
 
     def __str__(self):
         return f"{self.student} enrolled in {self.section}"
+
+
+class PastOrPlanned(models.Model):
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    semester = models.ForeignKey(Semester, on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.student} past/future enrolled {self.course} in {self.semester}"
