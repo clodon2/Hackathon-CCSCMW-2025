@@ -33,4 +33,4 @@ def convert_semester_readable(semester):
 
 def semester_to_number(semester):
     season_map = {'sp': 0, "su": 1, "fa": 2}
-    return int(semester[2:]) * 10 + season_map.get(semester[2:].lower(), -1)
+    return int(semester[2:]) * 10 + season_map.get(semester[:2].lower(), -1)
